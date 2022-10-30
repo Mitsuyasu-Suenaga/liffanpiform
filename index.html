@@ -145,20 +145,18 @@
 
         $(function () {
             $('form').submit(function () {
-                if(window.confirm('この内容で送信しますがよろしいでしょうか？')) {
-                    const question1 = $('input[name="question1"]').val();
-                    const question2 = $('input[name="question2"]:checked').val();
-    
-                    var question3Array = new Array();
-                    $('input[name=question3]:checked').each(function() {
-                        question3Array.push($(this).val());
-                    });
-                    const question3 =question3Array.join(",")
-    
-                    const question4 = $('input[name="question4"]').val();
-                    const msg = `${question1}\n${question2}\n${question3}\n${question4}`;
-                    sendText(msg);
-                }
+                const question1 = $('input[name="question1"]').val();
+                const question2 = $('input[name="question2"]:checked').val();
+
+                var question3Array = new Array();
+                $('input[name=question3]:checked').each(function() {
+                    question3Array.push($(this).val());
+                });
+                const question3 =question3Array.join(",")
+
+                const question4 = $('input[name="question4"]').val();
+                const msg = `${question1}\n${question2}\n${question3}\n${question4}`;
+                sendText(msg);
                 return false;
             });
         });
