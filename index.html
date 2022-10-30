@@ -156,7 +156,7 @@
                     const question3 =question3Array.join(",")
     
                     const question4 = $('input[name="question4"]').val();
-                    const msg = `${question1}\n${question2}\n${question3}\n${question4}`;
+                    const msg = `安否確認回答\nQ1:[${question1}]\nQ2:[${question2}]\nQ3:[${question3}]\nQ4:[${question4}]`;
                     sendText(msg);
                     return false;
                 }
