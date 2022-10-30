@@ -158,9 +158,8 @@
                     const question4 = $('input[name="question4"]').val();
                     const msg = `${question1}\n${question2}\n${question3}\n${question4}`;
                     sendText(msg);
-                } else {
-                    return false;
                 }
+                return false;
             });
         });
 
