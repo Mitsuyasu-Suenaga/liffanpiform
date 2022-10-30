@@ -11,6 +11,7 @@
     <style>
         @media screen and (max-width:767px) {
            body { font-size: 5vw }
+           select option{ font-size: 4vw }
            input[type='radio'] { transform:scale(1.5) }
            input[type='checkbox'] { transform:scale(1.5) }
            h1 { font-size: 8vw ;margin:0;}
@@ -21,13 +22,64 @@
 
 </head>
 <body>
-
-    <form>
+    <form class="anpiform" novalidate >
         <div class="card m-2">
             <div class="card-header text-light bg-info">
                 <h1>安否確認</h1>
             </div>
             <div class="card-body">
+                <div class="form-group">
+                    <label class="question-label" for="question">名前を入力してください。</label>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label>姓</label>
+                        <input name="firstname" class="firstname form-control" type="text" required>
+                        <div class="valid-feedback">
+                        </div>
+                        <div class="invalid-feedback">
+                            名前（姓）が入力されていません
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label>名</label>
+                        <input name="lastname" class="lastname form-control" type="text" required>
+                        <div class="valid-feedback">
+                        </div>
+                        <div class="invalid-feedback">
+                            名前（名）が入力されていません
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="form-group">
+                    <label class="question-label" for="question">所属班を選択してください。</label>
+                    <select class="form-control" name="usergroup" id="usergroup" required="">
+                        <option value="" disabled selected style='display:none;'>選択してください</option>
+                        <option value="1">1 班</option>
+                        <option value="2">2 班</option>
+                        <option value="3">3 班</option>
+                        <option value="4">4 班</option>
+                        <option value="5">5 班</option>
+                        <option value="6">6 班</option>
+                        <option value="7">7 班</option>
+                        <option value="8">8 班</option>
+                        <option value="9">9 班</option>
+                        <option value="10">10 班</option>
+                        <option value="11">11 班</option>
+                        <option value="12">12 班</option>
+                        <option value="不明">わからない</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        所属班を選択してください
+                    </div>
+                </div>
+
+                <hr>
+
                 <div class="form-group">
                     <label class="question-label" for="question">１）現在どこにいますか</label>
                     <div class="form-check ml-4 p-2">
@@ -45,6 +97,8 @@
                     <div class="form-check ml-4 p-2">
                         <input class="form-check-input" type="radio" name="question1" value="その他" id="question1d">
                         <label class="form-check-label question-input-label" for="question1d">その他</label>
+                    </div>
+                    <div class="valid-feedback">
                     </div>
                 </div>
 
@@ -95,8 +149,8 @@
                 <hr>
 
                 <div class="form-group">
-                    <label class="question-label" for="question">４）その他</label>
-                    <input type="text" class="form-control" name="question4" id="question4" placeholder="入力してください。">
+                    <label class="question-label" for="question">４）困っていることはありますか</label>
+                    <textarea class="form-control" name="question4" rows="3"></textarea>
                 </div>
             </div>
             <div class="card-footer text-center">
@@ -113,7 +167,20 @@
         crossorigin="anonymous"></script>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
     <script>
-
+(function() {
+  window.addEventListener('load', function() {
+    var forms = document.getElementsByClassName('anpiform');
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
         $(document).ready(function () {
             const liffId = "1657603686-wyknj8jn";
             initializeLiff(liffId);
@@ -145,7 +212,13 @@
 
         $(function () {
             $('form').submit(function () {
-                if(window.confirm('この内容で送信しますがよろしいでしょうか？')) {
+                if( !$(this).get(0).checkValidity() == true ){
+                    alert("入力内容を確認してください。")
+                } else if(window.confirm('この内容で送信しますがよろしいでしょうか？')) {
+                    const firstname = $('input[name="firstname"]').val();
+                    const lastname  = $('input[name="lastname"]').val();
+                    const usergroup  = $('[name=usergroup] option:selected').val();
+
                     const question1 = $('input[name="question1"]').val();
                     const question2 = $('input[name="question2"]:checked').val();
     
@@ -156,14 +229,13 @@
                     const question3 =question3Array.join(",")
     
                     const question4 = $('input[name="question4"]').val();
-                    const msg = `安否確認回答\nQ1:[${question1}]\nQ2:[${question2}]\nQ3:[${question3}]\nQ4:[${question4}]`;
+                    const msg = `安否確認回答\nU:[${usergroup},${firstname},${lastname}]\nQ1:[${question1}]\nQ2:[${question2}]\nQ3:[${question3}]\nQ4:[${question4}]`;
                     sendText(msg);
                     return false;
                 }
                 return false;
             });
         });
-
     </script>
 
 </body>
