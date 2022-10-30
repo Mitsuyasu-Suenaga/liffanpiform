@@ -13,7 +13,7 @@
            body { font-size: 5vw }
            h1 { font-size: 8vw ;margin:0;}
            .question-label { font-size: 6vw }
-           .question-input-label { position: relative; top: -6px; padding-left: 10px; }
+           .question-input-label { position: relative; top: -4px; padding-left: 10px; }
            input,textarea,select option{ font-size: 5vw }
            input[type='radio'] { transform:scale(1.5) }
            input[type='checkbox'] { transform:scale(1.5) }
@@ -162,6 +162,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
     <script>
 (function() {
@@ -210,25 +211,38 @@
         $(function () {
             $('form').submit(function () {
                 if( !$(this).get(0).checkValidity() == true ){
-                    alert("入力内容を確認してください。")
-                } else if(window.confirm('この内容で送信しますがよろしいでしょうか？')) {
-                    const firstname = $('input[name="firstname"]').val();
-                    const lastname  = $('input[name="lastname"]').val();
-                    const usergroup  = $('[name=usergroup] option:selected').val();
-
-                    const question1 = $('input[name="question1"]').val();
-                    const question2 = $('input[name="question2"]:checked').val();
-    
-                    var question3Array = new Array();
-                    $('input[name=question3]:checked').each(function() {
-                        question3Array.push($(this).val());
+                    swal('入力内容を確認してください。');
+                } else {
+                    var options = {
+                        text: 'この内容で送信しますがよろしいでしょうか？', //\nでテキストの改行が出来ます
+                        buttons: {
+                            cancel: 'キャンセル',
+                            ok: '送信する'
+                        }
+                    };
+                    swal(options).then(function(value){
+                        if(value){
+                            const firstname = $('input[name="firstname"]').val();
+                            const lastname  = $('input[name="lastname"]').val();
+                            const usergroup  = $('[name=usergroup] option:selected').val();
+        
+                            const question1 = $('input[name="question1"]').val();
+                            const question2 = $('input[name="question2"]:checked').val();
+            
+                            var question3Array = new Array();
+                            $('input[name=question3]:checked').each(function() {
+                                question3Array.push($(this).val());
+                            });
+                            const question3 =question3Array.join(",")
+            
+                            const question4 = $('input[name="question4"]').val();
+                            const msg = `安否確認回答\nU:[${usergroup},${firstname},${lastname}]\nQ1:[${question1}]\nQ2:[${question2}]\nQ3:[${question3}]\nQ4:[${question4}]`;
+                            sendText(msg);
+                            return false;
+                        }
                     });
-                    const question3 =question3Array.join(",")
-    
-                    const question4 = $('input[name="question4"]').val();
-                    const msg = `安否確認回答\nU:[${usergroup},${firstname},${lastname}]\nQ1:[${question1}]\nQ2:[${question2}]\nQ3:[${question3}]\nQ4:[${question4}]`;
-                    sendText(msg);
-                    return false;
+                    
+                    
                 }
                 return false;
             });
