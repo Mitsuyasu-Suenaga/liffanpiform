@@ -22,7 +22,7 @@
 </head>
 <body>
 
-    <form onsubmit="return beforeSubmit()">
+    <form>
         <div class="card m-2">
             <div class="card-header text-light bg-info">
                 <h1>安否確認</h1>
@@ -105,7 +105,7 @@
         </div>
         
     </form>
-    
+
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
@@ -118,14 +118,6 @@
             const liffId = "1657603686-wyknj8jn";
             initializeLiff(liffId);
         })
-
-        function beforeSubmit(){
-            if(window.confirm('この内容で送信しますがよろしいでしょうか？')) {
-                return true;
-            } else {
-                return false;
-            }
-        }
 
         function initializeLiff(liffId) {
             liff.init({
@@ -153,19 +145,22 @@
 
         $(function () {
             $('form').submit(function () {
-                const question1 = $('input[name="question1"]').val();
-                const question2 = $('input[name="question2"]:checked').val();
-
-                var question3Array = new Array();
-                $('input[name=question3]:checked').each(function() {
-                    question3Array.push($(this).val());
-                });
-                const question3 =question3Array.join(",")
-
-                const question4 = $('input[name="question4"]').val();
-                const msg = `${question1}\n${question2}\n${question3}\n${question4}`;
-                sendText(msg);
-                return false;
+                if(window.confirm('この内容で送信しますがよろしいでしょうか？')) {
+                    const question1 = $('input[name="question1"]').val();
+                    const question2 = $('input[name="question2"]:checked').val();
+    
+                    var question3Array = new Array();
+                    $('input[name=question3]:checked').each(function() {
+                        question3Array.push($(this).val());
+                    });
+                    const question3 =question3Array.join(",")
+    
+                    const question4 = $('input[name="question4"]').val();
+                    const msg = `${question1}\n${question2}\n${question3}\n${question4}`;
+                    sendText(msg);
+                } else {
+                    return false;
+                }
             });
         });
 
