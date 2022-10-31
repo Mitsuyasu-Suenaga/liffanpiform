@@ -219,9 +219,9 @@
             const key_usergroup = 'key-usergroup';
 
             // key の値があれば復元する
-            var session_firstname = window.sessionStorage.getItem([key_firstname]);
-            var session_lastname  = window.sessionStorage.getItem([key_lastname]);
-            var session_usergroup = window.sessionStorage.getItem([key_usergroup]);
+            var session_firstname = localStorage.getItem([key_firstname]);
+            var session_lastname  = localStorage.getItem([key_lastname]);
+            var session_usergroup = localStorage.getItem([key_usergroup]);
 
             if (session_firstname != null ){
                 $('input[name="firstname"]').val( session_firstname );
@@ -253,9 +253,9 @@
                             const usergroup  = $('[name=usergroup] option:selected').val();
 
                             // 氏名とグループの入力値をブラウザに保存しておく
-                            window.sessionStorage.setItem([key_firstname],[firstname]);
-                            window.sessionStorage.setItem([key_lastname] ,[lastname] );
-                            window.sessionStorage.setItem([key_usergroup],[usergroup]);
+                            localStorage.setItem([key_firstname],[firstname]);
+                            localStorage.setItem([key_lastname] ,[lastname] );
+                            localStorage.setItem([key_usergroup],[usergroup]);
         
                             const question1 = $('input[name="question1"]').val();
                             const question2 = $('input[name="question2"]:checked').val();
