@@ -14,7 +14,7 @@
            h1 { font-size: 8vw ;margin:0;}
            .question-label { font-size: 6vw }
            .question-input-label { position: relative; top: -4px; padding-left: 10px; }
-           input,textarea,select option{ font-size: 5vw }
+           input,textarea,select option , .swal-text{ font-size: 5vw }
            input[type='radio'] { transform:scale(1.5) }
            input[type='checkbox'] { transform:scale(1.5) }
         }
@@ -80,44 +80,48 @@
                 <div class="form-group">
                     <label class="question-label" for="question">１）現在どこにいますか</label>
                     <div class="form-check ml-4 p-2">
-                        <input class="form-check-input" type="radio" name="question1" value="自宅" id="question1a" checked>
+                        <input class="form-check-input" type="radio" name="question1" value="自宅" id="question1a" required>
                         <label class="form-check-label question-input-label" for="question1a">自宅</label>
                     </div>
                     <div class="form-check ml-4 p-2">
-                        <input class="form-check-input" type="radio" name="question1" value="職場" id="question1b">
+                        <input class="form-check-input" type="radio" name="question1" value="職場" id="question1b" required>
                         <label class="form-check-label question-input-label" for="question1b">職場</label>
                     </div>
                     <div class="form-check ml-4 p-2">
-                        <input class="form-check-input" type="radio" name="question1" value="避難場所" id="question1c">
+                        <input class="form-check-input" type="radio" name="question1" value="避難場所" id="question1c" required>
                         <label class="form-check-label question-input-label" for="question1c">避難場所</label>
                     </div>
                     <div class="form-check ml-4 p-2">
-                        <input class="form-check-input" type="radio" name="question1" value="その他" id="question1d">
+                        <input class="form-check-input" type="radio" name="question1" value="その他" id="question1d" required>
                         <label class="form-check-label question-input-label" for="question1d">その他</label>
-                    </div>
-                    <div class="valid-feedback">
+                        <div class="invalid-feedback">
+                            選択してください。
+                        </div>
                     </div>
                 </div>
 
                 <hr>
 
                 <div class="form-group">
-                    <label class="question-label" for="question">２）本人の安否</label>
+                    <label class="question-label" for="question">２）本人・家族の安否</label>
                     <div class="form-check ml-4 p-2">
-                        <input class="form-check-input" type="radio" name="question2" value="安全" id="question2a" checked>
+                        <input class="form-check-input" type="radio" name="question2" value="安全" id="question2a" required>
                         <label class="form-check-label question-input-label" for="question2a">安全</label>
                     </div>
                     <div class="form-check ml-4 p-2">
                         <input class="form-check-input" type="radio" name="question2" value="軽傷" id="question2b">
-                        <label class="form-check-label question-input-label" for="question2b">軽傷</label>
+                        <label class="form-check-label question-input-label" for="question2b">軽傷者がいる</label>
                     </div>
                     <div class="form-check ml-4 p-2">
                         <input class="form-check-input" type="radio" name="question2" value="重症" id="question2c">
-                        <label class="form-check-label question-input-label" for="question2c">重症</label>
+                        <label class="form-check-label question-input-label" for="question2c">重症者がいる</label>
                     </div>
                     <div class="form-check ml-4 p-2">
                         <input class="form-check-input" type="radio" name="question2" value="助けが必要" id="question2d">
                         <label class="form-check-label question-input-label" for="question2d">助けが必要</label>
+                        <div class="invalid-feedback">
+                            選択してください。
+                        </div>
                     </div>
                 </div>
 
@@ -209,6 +213,28 @@
         const key = params.get('key');
 
         $(function () {
+            // sessionキー
+            const key_firstname = 'key-firstname'; 
+            const key_lastname  = 'key-lastname';
+            const key_usergroup = 'key-usergroup';
+
+            // key の値があれば復元する
+            var session_firstname = window.sessionStorage.getItem([key_firstname]);
+            var session_lastname  = window.sessionStorage.getItem([key_lastname]);
+            var session_usergroup = window.sessionStorage.getItem([key_usergroup]);
+
+            if (session_firstname != null ){
+                $('input[name="firstname"]').val( session_firstname );
+            }
+            
+            if (session_lastname != null ){
+                $('input[name="lastname"]').val( session_lastname );
+            }
+            if (session_usergroup != null ){
+                $('[name=usergroup]').val( session_usergroup );
+            }
+
+            // form 操作
             $('form').submit(function () {
                 if( !$(this).get(0).checkValidity() == true ){
                     swal('入力内容を確認してください。');
@@ -225,6 +251,11 @@
                             const firstname = $('input[name="firstname"]').val();
                             const lastname  = $('input[name="lastname"]').val();
                             const usergroup  = $('[name=usergroup] option:selected').val();
+
+                            // 氏名とグループの入力値をブラウザに保存しておく
+                            window.sessionStorage.setItem([key_firstname],[firstname]);
+                            window.sessionStorage.setItem([key_lastname] ,[lastname] );
+                            window.sessionStorage.setItem([key_usergroup],[usergroup]);
         
                             const question1 = $('input[name="question1"]').val();
                             const question2 = $('input[name="question2"]:checked').val();
@@ -235,7 +266,7 @@
                             });
                             const question3 =question3Array.join(",")
             
-                            const question4 = $('input[name="question4"]').val();
+                            const question4 = $('textarea[name="question4"]').val();
                             const msg = `安否確認回答\nU:[${usergroup},${firstname},${lastname}]\nQ1:[${question1}]\nQ2:[${question2}]\nQ3:[${question3}]\nQ4:[${question4}]`;
                             sendText(msg);
                             return false;
